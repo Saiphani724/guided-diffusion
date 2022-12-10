@@ -452,7 +452,7 @@ class UNetModel(nn.Module):
             num_heads_upsample = num_heads
 
         self.image_size = image_size
-        self.in_channels = in_channels
+        self.in_channels = in_channels * 2
         self.model_channels = model_channels
         self.out_channels = out_channels
         self.num_res_blocks = num_res_blocks
@@ -651,6 +651,7 @@ class UNetModel(nn.Module):
             assert y.shape == (x.shape[0],)
             emb = emb + self.label_emb(y)
 
+        x = th.cat((x, x), axis = 1)
         h = x.type(self.dtype)
         for module in self.input_blocks:
             h = module(h, emb)
